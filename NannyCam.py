@@ -7,6 +7,7 @@
 import numpy as np
 import cv2
 import time
+import sys
 
 class NannyCam:
     LOG_TOKEN = '-> '
@@ -14,6 +15,10 @@ class NannyCam:
     INPUT_DEVICE_HEIGHT = 4
 
     def __init__(self, inputId = 0, codec = 'XVID', fps = 15, showOutput = True, outputDir = '.'):
+        if len(sys.argv) < 2:
+            self.printUsage()
+            exit(1)
+
         self.showOutput = showOutput
         self.inputDevice = cv2.VideoCapture(inputId)
         if self.inputDevice.isOpened():
@@ -72,6 +77,15 @@ class NannyCam:
     def _log(self, message):
         print(self.LOG_TOKEN + message)
 
+    def printUsage(self):
+        print("Usage:")
+        print("\tpython2 " + sys.argv[0] + " [parameters] <output_directory>");
+        print("Parameters:")
+        print("\tinputId\t\t\tid of the webcam [default=0]")
+        print("\tcodec\t\t\toutput video's codec [default=\"XVID\"]")
+        print("\tfps\t\t\toutput video's frames per second [default=15]")
+        print("\tshowOutput\t\twhether or not to open a preview window [default=True]")
+
     def _cleanUp(self, exitCode = 0):
         self._log('Cleaning up.')
 
@@ -89,4 +103,4 @@ class NannyCam:
         exit(exitCode)
 
 if __name__ == "__main__":
-    nc = NannyCam(2)
+    nc = NannyCam()
